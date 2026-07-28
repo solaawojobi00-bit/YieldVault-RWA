@@ -255,3 +255,47 @@ export const withdrawalSagaManualInterventionRequired = new Gauge({
   help: 'Withdrawal sagas with irreversible partial state awaiting an operator',
   registers: [register],
 });
+
+// --- Transfer Orchestration Metrics (Issue #1043) ---
+
+export const transferOrchestrationTotal = new Counter({
+  name: 'transfer_orchestration_total',
+  help: 'Terminal outcomes of orchestrated vault transfers',
+  labelNames: ['operation', 'outcome'],
+  registers: [register],
+});
+
+export const transferOrchestrationAttemptTotal = new Counter({
+  name: 'transfer_orchestration_attempt_total',
+  help: 'Individual transfer submission attempts by failure classification (ok when successful)',
+  labelNames: ['operation', 'classification'],
+  registers: [register],
+});
+
+export const transferOrchestrationRetryTotal = new Counter({
+  name: 'transfer_orchestration_retry_total',
+  help: 'Retries performed by the transfer orchestrator after a retryable failure',
+  labelNames: ['operation'],
+  registers: [register],
+});
+
+export const transferOrchestrationReplayTotal = new Counter({
+  name: 'transfer_orchestration_replay_total',
+  help: 'Transfers short-circuited by idempotency, by replay source',
+  labelNames: ['operation', 'source'],
+  registers: [register],
+});
+
+export const transferOrchestrationDuration = new Histogram({
+  name: 'transfer_orchestration_duration_seconds',
+  help: 'End-to-end duration of orchestrated vault transfers',
+  labelNames: ['operation', 'outcome'],
+  buckets: [0.05, 0.1, 0.25, 0.5, 1, 2, 5, 10, 30],
+  registers: [register],
+});
+
+export const transferOrchestrationPendingReconciliation = new Gauge({
+  name: 'transfer_orchestration_pending_reconciliation',
+  help: 'Transfers whose submission outcome is unknown and awaiting reconciliation',
+  registers: [register],
+});

@@ -287,6 +287,20 @@ recovery handle rather than a misleading `500`.
 See [Withdrawal Partial-Failure Recovery](../backend/docs/WITHDRAWAL_PARTIAL_FAILURE_RECOVERY.md)
 for the state machine, admin endpoints, metrics, and the operator runbook.
 
+#### Retrying a Submission Safely
+
+A third class of failure is worse than either: the submission itself fails in a
+way that does not say whether the transaction reached the network. Retrying it
+rebuilds the transaction from a fresh account sequence number, so the retry is a
+*second* envelope the network will happily include alongside the first.
+
+The transfer orchestration service classifies every submission failure as
+retryable, terminal, or indeterminate, retries only the first, and parks the
+ambiguous ones for reconciliation instead of guessing.
+
+See [Idempotent Retry-Safe Transfer Orchestration](../backend/docs/TRANSFER_ORCHESTRATION.md)
+for the classification table, the attempt journal, and the reconciliation flow.
+
 ---
 
 ## Share Price Mechanics
@@ -324,5 +338,6 @@ See [WEBHOOK_INTEGRATION.md](./WEBHOOK_INTEGRATION.md) for full event schema and
 
 - [Contracts Architecture](./CONTRACTS_ARCHITECTURE.md) — Full contract interface and storage layout
 - [Withdrawal Partial-Failure Recovery](../backend/docs/WITHDRAWAL_PARTIAL_FAILURE_RECOVERY.md) — Saga journal, recovery states, and operator runbook
+- [Idempotent Retry-Safe Transfer Orchestration](../backend/docs/TRANSFER_ORCHESTRATION.md) — Failure classification, attempt journal, and reconciliation
 - [Webhook Integration Guide](./WEBHOOK_INTEGRATION.md) — Consuming on-chain events
 - [Local Development Quickstart](./LOCAL_DEVELOPMENT_QUICKSTART.md) — Running the stack locally

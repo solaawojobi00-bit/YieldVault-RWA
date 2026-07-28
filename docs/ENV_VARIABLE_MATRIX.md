@@ -135,6 +135,19 @@ See [Withdrawal Partial-Failure Recovery](../backend/docs/WITHDRAWAL_PARTIAL_FAI
 | `WITHDRAWAL_RECOVERY_MAX_PER_SWEEP` | `25` | ⬜ optional | `25` |
 | `WITHDRAWAL_RECOVERY_RETENTION` | `1000` | ⬜ optional | `1000` |
 
+### Transfer Orchestration
+
+See [Idempotent Retry-Safe Transfer Orchestration](../backend/docs/TRANSFER_ORCHESTRATION.md).
+
+| Variable | Default | Required | Production Recommendation |
+|---|---|---|---|
+| `TRANSFER_MAX_ATTEMPTS` | `3` | ⬜ optional | `3` (only provably-unsent failures are retried) |
+| `TRANSFER_RETRY_INITIAL_DELAY_MS` | `250` | ⬜ optional | `250` |
+| `TRANSFER_RETRY_MAX_DELAY_MS` | `4000` (4 s) | ⬜ optional | `4000` |
+| `TRANSFER_ATTEMPT_TIMEOUT_MS` | `20000` (20 s) | ⬜ optional | `20000` (below the request timeout) |
+| `TRANSFER_JOURNAL_TTL_MS` | `86400000` (24 h) | ⬜ optional | Match `IDEMPOTENCY_KEY_TTL_MS` |
+| `TRANSFER_JOURNAL_MAX_ENTRIES` | `5000` | ⬜ optional | `5000` |
+
 ### OpenTelemetry (Tracing)
 
 | Variable | Default | Required | Production Recommendation |
