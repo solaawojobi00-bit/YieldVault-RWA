@@ -110,7 +110,8 @@ export function useTransactionRetry(
     return newId;
   }, [transactions]);
 
-  const refreshStatus = useCallback((_id: string) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- id kept to match the public refreshStatus(id) contract; not yet implemented
+  const refreshStatus = useCallback((id: string) => {
     // In a real implementation this would poll Horizon for tx status
   }, []);
 

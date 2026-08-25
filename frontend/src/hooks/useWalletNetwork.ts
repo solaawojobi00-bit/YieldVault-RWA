@@ -62,6 +62,7 @@ export function useWalletNetwork(walletAddress: string | null): WalletNetworkSta
       return;
     }
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- kicks off the initial network check; poll() sets state asynchronously after a fetch
     void poll();
     const id = window.setInterval(() => void poll(), POLL_MS);
 

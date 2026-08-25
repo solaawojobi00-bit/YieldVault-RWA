@@ -1,15 +1,11 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { AlertTriangle, Wifi, ExternalLink } from "./icons";
 import { useWalletNetwork } from "../hooks/useWalletNetwork";
-import { useTranslation } from "../i18n";
 
 interface NetworkSwitchNotificationProps {
   walletAddress: string | null;
   onSwitchNetwork?: (network: "testnet" | "mainnet") => Promise<void>;
 }
-
-const STELLAR_TESTNET_PASSPHRASE = "Test SDF Network ; September 2015";
-const STELLAR_MAINNET_PASSPHRASE = "Public Global Stellar Network ; September 2015";
 
 function detectExpectedNetwork(): "testnet" | "mainnet" {
   const passphrase = import.meta.env.VITE_STELLAR_NETWORK_PASSPHRASE ?? "";
@@ -27,7 +23,6 @@ const NetworkSwitchNotification: React.FC<NetworkSwitchNotificationProps> = ({
     isChecking,
     checkNow,
   } = useWalletNetwork(walletAddress);
-  const { t } = useTranslation();
   const [isDismissed, setIsDismissed] = useState(false);
   const [isSwitching, setIsSwitching] = useState(false);
   const [showSteps, setShowSteps] = useState(false);
@@ -35,7 +30,9 @@ const NetworkSwitchNotification: React.FC<NetworkSwitchNotificationProps> = ({
   // Reset dismissed state when mismatch changes
   useEffect(() => {
     if (!isMismatch) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- clears stale dismiss/steps UI when the mismatch that caused it goes away
       setIsDismissed(false);
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- clears stale dismiss/steps UI when the mismatch that caused it goes away
       setShowSteps(false);
     }
   }, [isMismatch]);

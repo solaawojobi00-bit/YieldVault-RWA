@@ -117,9 +117,9 @@ const TransactionStatusModal: React.FC<TransactionStatusModalProps> = ({
         return false;
       }
       throw new Error(`Horizon API returned status ${response.status}`);
-    } catch (err: any) {
+    } catch (err) {
       // Don't fail immediately on network flakes, let polling retry unless we hit max attempts
-      console.warn("Horizon poll attempt failed:", err.message);
+      console.warn("Horizon poll attempt failed:", err instanceof Error ? err.message : String(err));
       return false;
     }
   }, []);
@@ -127,8 +127,10 @@ const TransactionStatusModal: React.FC<TransactionStatusModalProps> = ({
   // Update state based on external props
   useEffect(() => {
     if (externalError) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- mirrors an external error prop into modal state
       setState("failure");
     } else if (txHash && state === "submitting") {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- advances modal state once a hash arrives from the caller
       setState("confirming");
       setPollCount(0);
     }
@@ -137,6 +139,7 @@ const TransactionStatusModal: React.FC<TransactionStatusModalProps> = ({
   // Reset modal state on reopen
   useEffect(() => {
     if (isOpen) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- resets modal state each time it reopens
       setState(txHash ? "confirming" : "submitting");
       setInternalError(null);
       setPollCount(0);
@@ -148,7 +151,6 @@ const TransactionStatusModal: React.FC<TransactionStatusModalProps> = ({
   useEffect(() => {
     if (!isOpen || state !== "confirming" || !txHash) return;
 
-    let timer: NodeJS.Timeout;
     const maxPolls = 15; // 30 seconds total at 2s interval
 
     const poll = async () => {
@@ -190,7 +192,7 @@ const TransactionStatusModal: React.FC<TransactionStatusModalProps> = ({
       }
     };
 
-    timer = setInterval(poll, 2000);
+    const timer = setInterval(poll, 2000);
 
     return () => {
       clearInterval(timer);
